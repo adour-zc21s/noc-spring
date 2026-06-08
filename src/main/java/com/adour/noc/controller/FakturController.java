@@ -13,7 +13,7 @@ import java.util.List;
  * @author {Open Class Programming}
  * Abdur Rahman Wahid - X-Sari
  * +62 813 8522 9903
- * Created 05/06/2026 - 9:01
+ * Created 05/06/2026 - 9:01..
  */
 @RestController
 @AllArgsConstructor
