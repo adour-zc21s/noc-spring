@@ -1,0 +1,13 @@
+package com.adour.noc;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class NocApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}
