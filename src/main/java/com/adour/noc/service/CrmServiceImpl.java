@@ -1,11 +1,17 @@
 package com.adour.noc.service;
 
 import com.adour.noc.model.Crm;
+import com.adour.noc.model.CrmDTO;
 import com.adour.noc.repository.CrmRepository;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 /*
  * @author {Open Class Programming}
@@ -16,28 +22,48 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class CrmServiceImpl implements CrmService{
-    private final CrmRepository crmRepository;
+
+    @Autowired
+    private CrmRepository crmRepository;
+    @Autowired
+    private ModelMapper modelMapper;
     @Override
-    public List<Crm> cariSemua() {
-        return crmRepository.findAll();
+    public CrmDTO createCrm(CrmDTO crmDTO) {
+        // Converts a Transfer Object (DTO) into a JPA Entity using ModelMapper
+        Crm crm = modelMapper.map(crmDTO, Crm.class);
+        crm = crmRepository.save(crm);
+        return modelMapper.map(crm, CrmDTO.class);
     }
 
     @Override
-    public Crm createCrm(Crm crm) {
-        return crmRepository.save(crm);
+    public CrmDTO getCrmById(Integer id) {
+        Crm crm = crmRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("CRM record not found with ID: " + id));
+        return modelMapper.map(crm, CrmDTO.class);
     }
 
     @Override
-    public Crm updateCrm(Crm crm) {
-        Crm existingCrm = crmRepository.findById(crm.getId()).get();
-        existingCrm.setName(crm.getName());
-        existingCrm.setHp(crm.getHp());
-        existingCrm.setAddress(crm.getAddress());
-        return crmRepository.save(existingCrm);
+    public List<CrmDTO> cariSemua() {
+        List<Crm> crm = crmRepository.findAll();
+        return crm.stream()
+                .map(crm1 -> modelMapper.map(crm1, CrmDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public CrmDTO updateCrm(Integer id, CrmDTO updateCrmDto) {
+        Crm existingCrm = crmRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("ID not found"));
+        existingCrm.setName(updateCrmDto.getName());
+        existingCrm.setType_kendaraan(updateCrmDto.getType_kendaraan());
+        Crm updateCrm = crmRepository.save(existingCrm);
+        return modelMapper.map(updateCrm,CrmDTO.class);
     }
 
     @Override
     public void hapusCrmById(Integer id) {
-        crmRepository.deleteById(id);
+        Crm existingCrm = crmRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException(id + "not found"));
+        crmRepository.delete(existingCrm);
     }
 }

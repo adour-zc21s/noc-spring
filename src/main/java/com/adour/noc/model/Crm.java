@@ -1,7 +1,9 @@
 package com.adour.noc.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /*
  * @author {Open Class Programming}
@@ -12,9 +14,12 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "crms")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Crm {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    // GenerationType.IDENTITY is autoincrement
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     @Column
     private String title;
@@ -23,7 +28,7 @@ public class Crm {
     @Column
     private String hp;
     @Column
-    private String typeKendaraan;
+    private String type_kendaraan;
     @Column
     private String address;
 }
